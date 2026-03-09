@@ -7,3 +7,5 @@
 /results/*
 *.out
 /hotspice_results/*
+/.idea
+.python-version
