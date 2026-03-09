@@ -9,3 +9,4 @@
 /hotspice_results/*
 /.idea
 .python-version
+.DS_Store
