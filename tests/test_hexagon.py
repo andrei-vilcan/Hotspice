@@ -25,3 +25,9 @@ for nx in range(5, 11): # Test various system sizes (and then trim to 1 hexagon)
         assert hotspice.xp.allclose(DD_m, E), f"Energy of magnets in a hexagon does not correspond to analytical solution (nx={nx},ny={ny})."
 
 print(f"Successfully ran test: {hotspice.utils.get_caller_script().name}.")
+
+# Display the hexagon in the GUI (single hexagon: nx=5, ny=3)
+mm = hotspice.ASI.IP_Kagome(a := l/np.tan(30*np.pi/180), nx=5, ny=3, moment=m, energies=[dd_energy], T=300, m_perp_factor=0, PBC=False)
+mm.m[(0,0,1),(1,3,4)] *= -1
+mm.update_energy()
+hotspice.gui.show(mm)
