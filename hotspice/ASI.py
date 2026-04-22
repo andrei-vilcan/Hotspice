@@ -354,6 +354,59 @@ class IP_Square_Open(IP_ASI):
     def _get_groundstate(self):
         return 'afm'
 
+
+class IP_Square_Open_Shifted(IP_ASI):
+    def __init__(self, a: float, n: int = None, *, nx: int = None, ny: int = None, **kwargs):
+        """ In-plane ASI with the spins placed on, and oriented along, the edges of squares.
+            The entire domain does not, however, form a square, but rather a 'diamond'.
+        """
+        self.a = a # [m] The side length of the squares
+        if nx is None: nx = n
+        if ny is None: ny = n
+        if nx is None or ny is None: raise AttributeError("Must specify <n> if either <nx> or <ny> are not specified.")
+        nx *= 2
+        ny *= 2
+        dx, dy = kwargs.pop('dx', a/math.sqrt(2)), kwargs.pop('dy', a/math.sqrt(2))
+        super().__init__(nx, ny, dx, dy, in_plane=True, **kwargs)
+
+    def _set_m(self, pattern: str):
+        match str(pattern).strip().lower():
+            case 'test':
+                self.m = xp.ones_like(self.iyy)
+                print("self.m:\n", self.m)
+            case 'afm':
+                self.m = (self.iyy % 2) * 2 - 1
+            case 'right':
+                self.m = xp.ones_like(self.xx)
+                self.m[self.iyy % 2 == 0] = 1
+            case 'left':
+                self.m = xp.ones_like(self.xx)
+                self.m[self.iyy % 2 != 0] = 1
+            case str(unknown_pattern):
+                super()._set_m(pattern=unknown_pattern)
+
+    def _get_angles(self):
+        angles = xp.ones_like(self.xx) * math.pi / 4
+        angles[(self.iyy + self.ixx) % 2 == 1] = -math.pi / 4
+        print("angles:\n", angles)
+        return angles
+
+    def _get_occupation(self):
+        return xp.ones_like(self.xx)
+
+    def _get_appropriate_avg(self):
+        return ['squarefour']
+
+    def _get_AFMmask(self):
+        return xp.array([[0, 1, 0], [-1, 0, -1], [0, 1, 0]], dtype='float')/4
+
+    def _get_nearest_neighbors(self):
+        return xp.array([[0, 1, 0], [1, 0, 1], [0, 1, 0]])
+
+    def _get_groundstate(self):
+        return 'test'
+
+
 class IP_Pinwheel(IP_Pinwheel_Diamond): pass # Just an alias for IP_Pinwheel, to follow naming scheme from "Apparent ferromagnetism in the pinwheel artificial spin ice"
 class IP_Pinwheel_LuckyKnot(IP_Square_Open):
     def __init__(self, a: float, n: int = None, *, nx: int = None, ny: int = None, **kwargs):
