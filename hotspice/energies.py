@@ -751,6 +751,12 @@ class DiMonopolarEnergy(DipolarEnergy): # Original author: Diego De Gusem
                 self.E_perp += 2 * interaction_perp
 
 
+class SensoryLayerEnergy(Energy):
+    def _initialize(self):
+        pass
+
+
+
 class ExchangeEnergy(Energy):  # TODO: allow random variation in J, see https://stackoverflow.com/a/73398072 for this kind of convolution
     def __init__(self, J=1):
         self.J = J # [J]

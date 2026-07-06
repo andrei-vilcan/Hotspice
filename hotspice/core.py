@@ -951,6 +951,9 @@ class Magnets(ABC): # TODO: make it possible to offset the ASI by some amount of
                 self.m = self.rng.integers(0, 2, size=self.xx.shape)*2 - 1
                 if unknown_pattern != 'random': warnings.warn(f"Pattern '{unknown_pattern}'' not recognized, defaulting to 'random'.", stacklevel=2)
 
+    def sample_sensory_spins(self):
+        pass
+
     @abstractmethod
     def _get_occupation(self):
         """ Returns a 2D array which contains 1 at the cells which are occupied by a magnet, and 0 elsewhere. """
